@@ -143,7 +143,7 @@ elif args.dataset == "DiscogsVI":
     info = {}
     i = 0
     for sp, suff in zip(["train", "valid", "test"], [".train", ".val", ".test"]):
-        fn = os.path.join(args.path_meta, "DiscogsVI-YT-20240701-light.json" + suff)
+        fn = os.path.join(args.path_meta, "Discogs-VI-YT-20240701-light.json" + suff)
         cliques, infosp, i, notfound = load_cliques_discogsvi(fn, i=i)
         splits[sp] = cliques
         info.update(infosp)
