@@ -71,19 +71,32 @@ def load_cliques_discogsvi(fn, i=0):
                 if os.path.exists(fn_meta):
                     basename = os.path.join(pref, ytid)
                     break
-            """
+                    
+            # 替换这部分代码：
             fn_meta = os.path.join(args.path_audio, ytid + ".meta")
             if os.path.exists(fn_meta):
                 basename = ytid
+            """
+            # 改为直接检查音频文件：
+            fn_audio = os.path.join(args.path_audio, ytid + "." + args.ext_in)
+            if os.path.exists(fn_audio):
+                basename = ytid
+
             
             if basename is None:
                 notfound += 1
                 continue
+            """
+            # 替换这部分：
             # load metadata
             try:
                 data = file_utils.load_json(fn_meta)
             except:
                 data = {}
+            """
+            # 改为使用JSON文件中的信息：
+            data = {"artist": "?", "title": "?"}
+                
             # fill in now
             clique.append(idx)
             cliqueinfo[idx] = {
