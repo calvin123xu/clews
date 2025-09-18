@@ -59,6 +59,7 @@ def load_cliques_discogsvi(fn, i=0):
             idx = c + ":" + v
             # search basename
             basename = None
+            """
             for pref in [
                 ytid[:2],
                 ytid[0].upper() + ytid[1].upper(),
@@ -70,6 +71,11 @@ def load_cliques_discogsvi(fn, i=0):
                 if os.path.exists(fn_meta):
                     basename = os.path.join(pref, ytid)
                     break
+            """
+            fn_meta = os.path.join(args.path_audio, ytid + ".meta")
+            if os.path.exists(fn_meta):
+                basename = ytid
+            
             if basename is None:
                 notfound += 1
                 continue
@@ -86,7 +92,7 @@ def load_cliques_discogsvi(fn, i=0):
                 "version": v,
                 "artist": data["artist"] if "artist" in data else "?",
                 "title": data["title"] if "title" in data else "?",
-                "filename": os.path.join(basename + "." + args.ext_in),
+                "filename": basename + "." + args.ext_in,
             }
             i += 1
             # if i == istart + 1000:
