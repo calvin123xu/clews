@@ -110,7 +110,7 @@ dloader = torch.utils.data.DataLoader(
     dset,
     batch_size=1,
     shuffle=False,
-    num_workers=8,
+    num_workers=2,
     drop_last=False,
     pin_memory=False,
 )
