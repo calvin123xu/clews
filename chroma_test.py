@@ -5,7 +5,6 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
 
 # ================== 1. Chroma特征提取 ==================
 
