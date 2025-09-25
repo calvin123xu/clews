@@ -426,28 +426,38 @@ def create_test_data():
     """创建测试数据"""
     # 创建一些合成的chroma特征用于测试
     sr = 22050
-    duration = 5  # 5秒
+    note_duration = 0.8  # 每个音符持续0.8秒，更长一些
+    total_duration = 8 * note_duration  # 总时长
     
     # C大调音阶
     c_major_freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]  # C4-C5
     
     # 生成C大调音阶音频
-    t = np.linspace(0, duration, sr * duration, False)
-    audio_c_major = np.zeros_like(t)
+    audio_c_major = []
     
-    for i, freq in enumerate(c_major_freqs):
-        start_idx = int(i * len(t) / len(c_major_freqs))
-        end_idx = int((i + 1) * len(t) / len(c_major_freqs))
-        audio_c_major[start_idx:end_idx] = np.sin(2 * np.pi * freq * t[start_idx:end_idx])
+    for freq in c_major_freqs:
+        # 每个音符的时间向量
+        t = np.linspace(0, note_duration, int(sr * note_duration), False)
+        # 添加包络以避免突然的音频切换
+        envelope = np.exp(-3 * t / note_duration)  # 指数衰减包络
+        note_audio = np.sin(2 * np.pi * freq * t) * envelope
+        audio_c_major.extend(note_audio)
+    
+    audio_c_major = np.array(audio_c_major)
     
     # 生成D大调音阶音频 (移调+2半音)
     d_major_freqs = [f * (2 ** (2/12)) for f in c_major_freqs]
-    audio_d_major = np.zeros_like(t)
+    audio_d_major = []
     
-    for i, freq in enumerate(d_major_freqs):
-        start_idx = int(i * len(t) / len(d_major_freqs))
-        end_idx = int((i + 1) * len(t) / len(d_major_freqs))
-        audio_d_major[start_idx:end_idx] = np.sin(2 * np.pi * freq * t[start_idx:end_idx])
+    for freq in d_major_freqs:
+        t = np.linspace(0, note_duration, int(sr * note_duration), False)
+        envelope = np.exp(-3 * t / note_duration)
+        note_audio = np.sin(2 * np.pi * freq * t) * envelope
+        audio_d_major.extend(note_audio)
+    
+    audio_d_major = np.array(audio_d_major)
+    
+    print(f"生成的音频长度: {len(audio_c_major) / sr:.2f}秒")
     
     return audio_c_major, audio_d_major, sr
 
