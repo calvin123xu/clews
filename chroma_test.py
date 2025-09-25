@@ -13,10 +13,11 @@ def extract_chroma_features(audio_file, sr=22050):
     y, sr = librosa.load(audio_file, sr=sr)
     
     # 提取chroma特征 (12维，对应12个半音)
+    # 使用更大的hop_length来减少时间分辨率，让音符变化更明显
     chroma = librosa.feature.chroma_stft(
         y=y, sr=sr, 
-        hop_length=512,
-        n_fft=2048,
+        hop_length=2048,  # 增大hop_length
+        n_fft=4096,       # 增大fft窗口
         tuning=0  # 可以设置调音偏移
     )
     
@@ -29,8 +30,8 @@ def extract_chroma_from_array(audio_array, sr=22050):
     """从音频数组直接提取chroma特征"""
     chroma = librosa.feature.chroma_stft(
         y=audio_array, sr=sr, 
-        hop_length=512,
-        n_fft=2048,
+        hop_length=2048,  # 与上面保持一致
+        n_fft=4096,
         tuning=0
     )
     chroma = librosa.util.normalize(chroma, axis=0)
@@ -97,7 +98,11 @@ def visualize_interval_extraction(chroma_features):
     dominant_pitches = []
     pitch_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     
-    for frame_idx in range(min(10, chroma_features.shape[1])):  # 只显示前10帧
+    # 显示更多帧来看到音符变化，每隔几帧取一个样本
+    sample_frames = min(20, chroma_features.shape[1])
+    step = max(1, chroma_features.shape[1] // sample_frames)
+    
+    for frame_idx in range(0, min(sample_frames * step, chroma_features.shape[1]), step):
         frame = chroma_features[:, frame_idx]
         dominant_pitch = np.argmax(frame)
         dominant_pitches.append(dominant_pitch)
